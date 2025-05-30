@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!--
+<html lang="ar" xmlns:th="http://www.thymeleaf.org">
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html>
+    <head>
+        <title>محول الوحدات السريع</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!--CSS الأساسي للتصميم */ -->
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                background-color: #f4f7f6;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                margin: 0;
+                color: #333;
+            }
+            .container {
+                background-color: #ffffff;
+                padding: 35px 45px;
+                border-radius: 12px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                max-width: 550px;
+                width: 90%;
+            }
+            h1 {
+                color: #2c3e50;
+                margin-bottom: 30px;
+                font-size: 2.2em;
+            }
+            .converter-section, .feedback-section {
+                margin-bottom: 30px;
+                padding: 20px;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                background-color: #fdfdfd;
+            }
+            .input-group {
+                margin-bottom: 20px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 15px; /* مسافة بين العناصر */
+            }
+            .input-group label {
+                font-weight: bold;
+                margin-right: 5px;
+                font-size: 1.1em;
+            }
+            .input-group input[type="number"],
+            .input-group select,
+            #result {
+                padding: 12px 15px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 1em;
+                outline: none;
+                transition: border-color 0.3s ease;
+            }
+            .input-group input[type="number"]:focus,
+            .input-group select:focus {
+                border-color: #007bff;
+            }
+            #result {
+                background-color: #e9ecef;
+                font-weight: bold;
+                color: #0056b3;
+                min-width: 150px;
+                text-align: center;
+            }
+            .feedback-section textarea {
+                width: calc(100% - 22px); /* 100% - padding */
+                padding: 10px;
+                margin-top: 15px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 1em;
+                resize: vertical;
+                min-height: 80px;
+                outline: none;
+                transition: border-color 0.3s ease;
+            }
+            .feedback-section textarea:focus {
+                border-color: #007bff;
+            }
+            button {
+                background-color: #007bff;
+                color: white;
+                padding: 12px 25px;
+                border: none;
+                border-radius: 5px;
+                font-size: 1.1em;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                margin-top: 15px;
+            }
+            button:hover {
+                background-color: #0056b3;
+                transform: translateY(-2px);
+            }
+            #feedbackMessage {
+                margin-top: 15px;
+                font-weight: bold;
+                color: green;
+            }
+            @media (max-width: 600px) {
+                .input-group {
+                    flex-direction: column;
+                }
+                .input-group input, .input-group select, #result {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>محول الوحدات السريع</h1>
+
+            <div class="converter-section">
+                <p>أدخل القيمة واختر الوحدات للتحويل:</p>
+                <div class="input-group">
+                    <input type="number" id="inputValue" value="1" min="0" step="any">
+                    <select id="fromUnit">
+                        <option value="meter">متر (m)</option>
+                        <option value="centimeter">سنتيمتر (cm)</option>
+                        <option value="kilometer">كيلومتر (km)</option>
+                        <option value="foot">قدم (ft)</option>
+                        <option value="inch">بوصة (in)</option>
+                        <option value="mile">ميل (mi)</option>
+                    </select>
+                    <span>إلى</span>
+                    <select id="toUnit">
+                        <option value="foot">قدم (ft)</option>
+                        <option value="meter">متر (m)</option>
+                        <option value="centimeter">سنتيمتر (cm)</option>
+                        <option value="kilometer">كيلومتر (km)</option>
+                        <option value="inch">بوصة (in)</option>
+                        <option value="mile">ميل (mi)</option>
+                    </select>
+                    <div id="result">0.00</div>
+                </div>
+            </div>
+
+            <div class="feedback-section">
+                <h2>شاركنا رأيك أو اقتراحاتك</h2>
+                <textarea id="feedbackText" rows="4" placeholder="اكتب ملاحظاتك أو اقتراحاتك هنا... (مثل: اقتراح لوحدات جديدة، صعوبات واجهتها في الاستخدام)"></textarea>
+                <button id="submitFeedback">إرسال الملاحظات</button>
+                <p id="feedbackMessage"></p>
+            </div>
+        </div>
+
+        <script>
+            // هذا الكود سيتم ملؤه في الخطوة التالية
+            document.addEventListener('DOMContentLoaded', () => {
+                const inputValue = document.getElementById('inputValue');// للوصول الى بيانات حقل الادخال
+                const fromUnit = document.getElementById('fromUnit');
+                const toUnit = document.getElementById('toUnit');
+                const resultDiv = document.getElementById('result');
+                const feedbackText = document.getElementById('feedbackText');
+                const submitFeedbackButton = document.getElementById('submitFeedback');
+                const feedbackMessage = document.getElementById('feedbackMessage');
+                // خريطة التحويلات (القيمة الأساسية هي المتر)
+                const conversions = {
+                    // القيم هي عوامل التحويل إلى متر
+                    'meter': 1,
+                    'centimeter': 0.01,
+                    'kilometer': 1000,
+                    'foot': 0.3048,
+                    'inch': 0.0254,
+                    'mile': 1609.34
+                };
+// دالة التحويل الأساسية
+                function convertUnit() {
+                    const value = parseFloat(inputValue.value); // تحويل القيمة المدخلة في حقل الادخال الى رقم عشري
+                    const from = fromUnit.value;// value of from unit select menu
+                    const to = toUnit.value;// value of to unit select menu
+                    // التحقق أن المدخلات رقم
+                    if (isNaN(value)) {
+                        resultDiv.textContent = 'أدخل رقما';
+                        return;
+                    }
+                    // هنا نقوم بتحويل اي وحدة الى مترهنا كأننا نوحد المقامات 
+                    const valueInMeter = value * conversions[from];
+                    // بعد تحويل اي وحدة الى متر نقوم بحساب اي قيمة بناء على الوحدة الاساسية متر
+                    const convertedValue = valueInMeter / conversions[to];
+                    // عرض النتيجة مقربة الى اقرب  اربعة ارقام عشرية
+                    resultDiv.textContent = convertedValue.toFixed(4);
+                    // تسجيل التفاعل
+                    console.log('تحويل : ${value}${from} إلى${convertedValue.toFixed(4)} ${to}');
+                }
+                // الاستماع الى احداث التغيير
+                inputValue.addEventListener('input', convertUnit);//عند ادخال في مربع الادخال يتم تشغيل الدالة
+                fromUnit.addEventListener('change', convertUnit);//عند تغيير العنصر المختار يتم تشغيل الدالة
+                toUnit.addEventListener('change', convertUnit);//عند تغيير العنصر المختار يتم تشغيل الدالة
+                // تشغيل التحميل عند فتح الصفحة لأول مرة
+                convertUnit();
+                // دالة لإرسال الملاحظات (تطبع في Console حاليًا)
+                submitFeedbackButton.addEventListener('click', () => {
+                    const feedback = feedbackText.value.trim();
+                    if (feedback) {
+                        console.log('ملاحظة جديدة:', feedback);
+                        feedbackMessage.textContent = 'شكراً لك، تم إرسال ملاحظاتك!';
+                        feedbackMessage.style.color = 'green';
+                        feedbackText.value = ''; // مسح مربع النص
+                    } else {
+                        feedbackMessage.textContent = 'الرجاء كتابة ملاحظات قبل الإرسال.';
+                        feedbackMessage.style.color = 'red';
+                    }
+                    // إخفاء الرسالة بعد بضع ثوانٍ
+                    setTimeout(() => {
+                        feedbackMessage.textContent = '';
+                    }, 5000);
+                });
+
+                // تسجيل زيارة الصفحة (يمكن استخدامها لتتبع تفاعل المستخدمين)
+                console.log('المستخدم زار صفحة محول الوحدات.');
+            });
+        </script>
+    </body>
+</html>
